@@ -1,0 +1,12 @@
+version: v2
+inputs:
+  - directory: ../api
+plugins:
+  - remote: buf.build/bufbuild/es:v2.10.2
+    out: src/gen
+    opt:
+      - target=ts
+  - remote: buf.build/connectrpc/query-es:v2.2.0
+    out: src/gen
+    opt:
+      - target=ts

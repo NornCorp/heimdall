@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package observer.v1;
+
+option go_package = "github.com/norncorp/heimdall/pkg/api/observer/v1;observerapi";
+
+// ObserverService provides APIs for observing the service mesh topology
+service ObserverService {
+  // GetTopology returns the current topology snapshot
+  rpc GetTopology(GetTopologyRequest) returns (GetTopologyResponse) {}
+
+  // WatchTopology streams topology updates in real-time
+  rpc WatchTopology(WatchTopologyRequest) returns (stream TopologyUpdate) {}
+
+  // GetServiceResources fetches resource metadata from a Loki service via RPC
+  rpc GetServiceResources(GetServiceResourcesRequest) returns (GetServiceResourcesResponse) {}
+}
+
+// GetTopologyRequest requests the current topology
+message GetTopologyRequest {}
+
+// GetTopologyResponse contains the current topology
+message GetTopologyResponse {
+  Topology topology = 1;
+}
+
+// WatchTopologyRequest requests a stream of topology updates
+message WatchTopologyRequest {}
+
+// TopologyUpdate is streamed when the topology changes
+message TopologyUpdate {
+  Topology topology = 1;
+  UpdateType update_type = 2;
+}
+
+// UpdateType indicates the type of topology update
+enum UpdateType {
+  UPDATE_TYPE_UNSPECIFIED = 0;
+  UPDATE_TYPE_FULL = 1;        // Full topology snapshot
+  UPDATE_TYPE_INCREMENTAL = 2; // Incremental update
+}
+
+// Topology represents the service mesh topology
+message Topology {
+  repeated Service services = 1;
+  int64 timestamp = 2; // Unix timestamp in milliseconds
+}
+
+// Service represents a service in the mesh
+message Service {
+  string name = 1;           // Service name
+  string type = 2;           // Service type (http, tcp, postgres, etc.)
+  string address = 3;        // Service address (host:port)
+  string node_name = 4;      // Serf node name
+  repeated string upstreams = 5; // Upstream service dependencies
+  ServiceStatus status = 6;  // Service status
+  map<string, string> tags = 7; // Additional metadata tags
+  repeated Resource resources = 8; // Resources defined by this service
+}
+
+// Resource represents a data resource (table/collection) exposed by a service
+message Resource {
+  string name = 1;           // Resource name (e.g., "user", "order")
+  int32 row_count = 2;       // Number of rows/records
+  repeated Field fields = 3; // Field schema
+  string plural_name = 4;    // Plural form for endpoint (e.g., "users", "orders")
+}
+
+// Field represents a field/column in a resource
+message Field {
+  string name = 1;           // Field name
+  string type = 2;           // Field type (uuid, name, email, int, etc.)
+  repeated string values = 3; // Enum values (if type is enum)
+  optional double min = 4;   // Min value (for numeric types)
+  optional double max = 5;   // Max value (for numeric types)
+}
+
+// GetServiceResourcesRequest requests resource metadata for a service
+message GetServiceResourcesRequest {
+  string service_name = 1; // Name of the service to query
+}
+
+// GetServiceResourcesResponse contains resource metadata
+message GetServiceResourcesResponse {
+  repeated Resource resources = 1;
+}
+
+// ServiceStatus represents the health status of a service
+enum ServiceStatus {
+  SERVICE_STATUS_UNSPECIFIED = 0;
+  SERVICE_STATUS_HEALTHY = 1;   // Service is healthy and responsive
+  SERVICE_STATUS_UNHEALTHY = 2; // Service is unhealthy or not responding
+  SERVICE_STATUS_UNKNOWN = 3;   // Status cannot be determined
+}

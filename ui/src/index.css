@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+    /* Norncorp brand colors */
+    --color-norn-dark: #081C15;
+    --color-norn-darker: #0D1F17;
+    --color-norn-green: #38BA73;
+    --color-norn-green-light: #4ADE80;
+    --color-norn-muted: #6B8F7A;
+
+    /* Apply to Tailwind's primary palette */
+    --color-primary-50: #F0FDF4;
+    --color-primary-100: #DCFCE7;
+    --color-primary-200: #BBF7D0;
+    --color-primary-300: #86EFAC;
+    --color-primary-400: var(--color-norn-green-light);
+    --color-primary-500: var(--color-norn-green);
+    --color-primary-600: #2F9D5F;
+    --color-primary-700: #22794B;
+    --color-primary-800: #1D5E3B;
+    --color-primary-900: var(--color-norn-dark);
+    --color-primary-950: var(--color-norn-darker);
+}
+
+body {
+    @apply bg-gray-50 text-gray-900 dark:bg-norn-darker dark:text-gray-100;
+}
+
+#root {
+    @apply min-h-screen;
+}
+
+/* React Flow dark mode overrides */
+.react-flow__controls button {
+    background-color: #081C15 !important;
+    border-color: #374151 !important;
+    color: #D1D5DB !important;
+}
+
+.react-flow__controls button:hover {
+    background-color: #1F2937 !important;
+    color: #FFFFFF !important;
+}
+
+.react-flow__controls button path {
+    fill: currentColor !important;
+}
+
+.react-flow__minimap {
+    background-color: #081C15 !important;
+    border: 1px solid #374151 !important;
+}
+
+.react-flow__minimap-mask {
+    fill: rgba(8, 28, 21, 0.8) !important;
+}
+
+.react-flow__attribution {
+    background-color: rgba(8, 28, 21, 0.8) !important;
+    border: 1px solid #374151 !important;
+    color: #6B8F7A !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+}
+
+.react-flow__attribution a {
+    color: #38BA73 !important;
+    text-decoration: none !important;
+}
+
+.react-flow__attribution a:hover {
+    color: #4ADE80 !important;
+}
