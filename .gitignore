@@ -1,0 +1,12 @@
+# Compiled binary
+/heimdall
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+.env.*
+
+# Local config
+ui/Support/
